@@ -24,7 +24,7 @@ final class MoviesViewController: UIViewController,
     private let navTitleLabel: UILabel = {
         let l = UILabel()
         l.text = "Movie"
-        l.font = .systemFont(ofSize: 30, weight: .bold) // 30 bold
+        l.font = .custom(.roboto(weight: .bold, size: 30))
         l.textColor = .label
         l.setContentHuggingPriority(.required, for: .horizontal)
         return l
@@ -33,7 +33,7 @@ final class MoviesViewController: UIViewController,
     private let avgTitleLabel: UILabel = {
         let l = UILabel()
         l.text = "Avg: –"
-        l.font = .systemFont(ofSize: 15, weight: .semibold)
+        l.font = .custom(.roboto(weight: .semibold, size: 16))
         l.textColor = .secondaryLabel
         l.textAlignment = .center
         l.numberOfLines = 1
@@ -60,12 +60,12 @@ final class MoviesViewController: UIViewController,
     
     private func setupCollection() {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 20
+        layout.minimumLineSpacing = 16
         layout.minimumInteritemSpacing = 16
-        let inset: CGFloat = 20
+        let inset: CGFloat = 16.5
         let w = (view.bounds.width - inset*2 - layout.minimumInteritemSpacing) / 2
-        layout.itemSize = CGSize(width: w, height: w * 1.5 + 52)
-        layout.sectionInset = UIEdgeInsets(top: 16, left: inset, bottom: 16, right: inset)
+        layout.itemSize = CGSize(width: w, height: w * 1.65)
+        layout.sectionInset = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -253,6 +253,13 @@ final class MoviesViewController: UIViewController,
         return .zero
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let movie = viewModel.movies[indexPath.item]
+        let detailsVM = DetailsViewModel(movieId: movie.id)
+        let detailsVC = MovieDetailsHostingController(viewModel: detailsVM)
+        navigationController?.pushViewController(detailsVC, animated: true)
+    }
+    
     // MARK: Trigger
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard viewModel.hasMore else { return }
@@ -283,6 +290,12 @@ final class MoviesViewController: UIViewController,
         return item
     }
 
+    private var favoritesBarButton: UIBarButtonItem {
+        let image = UIImage(resource: .favOnIcon).withRenderingMode(.alwaysTemplate)
+        let item = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onFavoritesTapped))
+        return item
+    }
+
     private func setupNavBar() {
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.largeTitleDisplayMode = .never
@@ -306,8 +319,8 @@ final class MoviesViewController: UIViewController,
         ])
         navigationItem.titleView = avgContainer
 
-        // Keep right buttons
-        navigationItem.rightBarButtonItems = [themeBarButton, searchBarButton]
+        // Add right buttons: favorites, theme, search
+        navigationItem.rightBarButtonItems = [favoritesBarButton, themeBarButton, searchBarButton]
 
         // Initial average
         updateAverageLabel()
@@ -325,8 +338,8 @@ final class MoviesViewController: UIViewController,
         }
         let sum = ratings.reduce(0.0, +)
         let avg = sum / Double(ratings.count)
-        print("Average rating updated to:", String(format: "Avg: %.2f", avg))
-        avgTitleLabel.text = String(format: "Avg: %.2f", avg)
+        print("Average rating updated to:", String(format: "Avg Rating: %.2f", avg))
+        avgTitleLabel.text = String(format: "Avg Rating: %.2f", avg)
         updateAvgTitleSize()
         avgTitleLabel.setNeedsLayout()
     }
@@ -345,25 +358,19 @@ final class MoviesViewController: UIViewController,
         super.viewDidLayoutSubviews()
         updateAvgTitleSize()
     }
-
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        // Re-apply dynamic tint (UIColor.label adapts automatically)
-//        navigationController?.navigationBar.tintColor = .label
-//        // Ensure images stay templated
-//        navigationItem.rightBarButtonItems?.forEach { item in
-//            if let img = item.image {
-//                item.image = img.withRenderingMode(.alwaysTemplate)
-//            }
-//        }
-//    }
-
+    
     @objc private func onThemeTapped() {
         ThemeManager.shared.toggleTheme()
     }
 
     @objc private func onSearchTapped() {
         presentSearch()
+    }
+    
+    @objc private func onFavoritesTapped() {
+        let alert = UIAlertController(title: "Favorites", message: "Favorites screen will be implemented later", preferredStyle: .alert)
+        alert.addAction(.init(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 
     /// Stub for search flow; replace with your real search screen
