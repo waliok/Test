@@ -1,9 +1,18 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode user data
+xcuserdata/
+DerivedData/
+*.xcuserstate
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
 # Swift Package Manager
 Packages/
+Package.pins
 Package.resolved
-
-## User settings
-xcuserdata/
-
-# Output folders
-DerivedData/
+.swiftpm/
