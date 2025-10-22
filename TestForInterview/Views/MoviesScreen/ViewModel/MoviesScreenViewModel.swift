@@ -7,6 +7,7 @@
 
 import Foundation
 import QuartzCore
+import Combine
 
 private func logInfo(_ message: String) {
     print("[Movies][Pagination] \(message)")
@@ -19,17 +20,33 @@ final class MoviesScreenViewModel {
     private(set) var totalPages = Int.max
     private var isLoading = false
 
+    private var pendingOfflineAlert: DispatchWorkItem?
+
     var hasMore: Bool { currentPage < totalPages }
 
     var onInitialLoading: ((Bool) -> Void)?
     var onBatchAppended: ((_ range: Range<Int>) -> Void)?
     var onError: ((Error) -> Void)?
+    let alertSubject = PassthroughSubject<AlertType, Never>()
 
     func refresh() {
+        pendingOfflineAlert?.cancel()
+        pendingOfflineAlert = nil
+        onInitialLoading?(true)
+        guard NetworkMonitor.shared.isConnected else {
+            print("No Internet Connection")
+            let work = DispatchWorkItem { [weak self] in
+                self?.alertSubject.send(.noInternet)
+                self?.onInitialLoading?(false)
+                self?.pendingOfflineAlert = nil
+            }
+            pendingOfflineAlert = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+            return
+        }
         currentPage = 0
         totalPages = .max
         movies.removeAll()
-        onInitialLoading?(true)
         loadNextBatch()
     }
 
@@ -45,6 +62,12 @@ final class MoviesScreenViewModel {
      ///   - Sends `onInitialLoading(false)` when done and calls `onError` if both failed.
      */
     func loadNextBatch() {
+        guard NetworkMonitor.shared.isConnected else {
+            print("No Internet Connection")
+            alertSubject.send(.noInternet)
+            onInitialLoading?(false)
+            return
+        }
         // Prevent duplicate loads or loading past the last page
         guard !isLoading, hasMore else { return }
         isLoading = true
@@ -116,6 +139,20 @@ final class MoviesScreenViewModel {
             // If both failed, surface error
             if page1 == nil && page2 == nil, let error = firstError {
                 self.onError?(error)
+                if self.movies.isEmpty { // initial load: keep loader for ~3s first
+                    self.pendingOfflineAlert?.cancel()
+                    let work = DispatchWorkItem { [weak self] in
+                        self?.alertSubject.send(.error(error.localizedDescription))
+                        self?.onInitialLoading?(false)
+                        self?.pendingOfflineAlert = nil
+                    }
+                    self.pendingOfflineAlert = work
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+                } else {
+                    // pagination case: show error right away (no initial overlay)
+                    self.alertSubject.send(.error(error.localizedDescription))
+                    self.onInitialLoading?(false)
+                }
                 return
             }
 
@@ -125,6 +162,9 @@ final class MoviesScreenViewModel {
             if let p2 = page2 { self.append(p2) }
             let endIndex = self.movies.count
             if endIndex > startIndex {
+                // Cancel any scheduled offline alert because we have data
+                self.pendingOfflineAlert?.cancel()
+                self.pendingOfflineAlert = nil
                 self.onBatchAppended?(startIndex..<endIndex)
             }
         }

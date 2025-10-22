@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import Network
 
 
 final class SearchScreenViewController: UIViewController {
@@ -59,6 +60,23 @@ final class SearchScreenViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
+        viewModel.alertSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] alert in
+                guard let self = self else { return }
+                switch alert {
+                case .noInternet:
+                    let retry = UIAlertAction(title: "Retry", style: .default) { _ in
+                        self.viewModel.submitSearch(self.contentView.searchField.text ?? "")
+                    }
+                    let cancel = UIAlertAction.cancel
+                    self.showAlertWithActions(title: "No Internet", message: "Please check your connection and try again.", actions: [retry, cancel])
+                case .error(let message):
+                    self.showError(message: message)
+                }
+            }
+            .store(in: &cancellables)
 
         // Bind VC -> VM (inputs)
         searchTextPublisher

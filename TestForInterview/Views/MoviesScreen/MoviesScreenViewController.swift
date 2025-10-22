@@ -7,6 +7,7 @@
 
 
 import UIKit
+import Combine
 
 final class MoviesScreenViewController: UIViewController {
     
@@ -16,6 +17,7 @@ final class MoviesScreenViewController: UIViewController {
     private var initialHideWorkItem: DispatchWorkItem?
     private var initialShowTime: CFTimeInterval?
     private var firstLoadOverlay: FirstLoadOverlay?
+    private var cancellables = Set<AnyCancellable>()
     
     // Nav bar custom views
     private let navTitleLabel: UILabel = {
@@ -74,6 +76,24 @@ final class MoviesScreenViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        viewModel.alertSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] alert in
+                guard let self = self else { return }
+                switch alert {
+                case .noInternet:
+                    let retry = UIAlertAction(title: "Retry", style: .default) { _ in
+                        self.viewModel.refresh()
+                    }
+                    let cancel = UIAlertAction.cancel
+                    self.showAlertWithActions(title: "No Internet", message: "Please check your connection and try again.", actions: [retry, cancel])
+                case .error(let message):
+                    self.showError(message: message)
+                }
+            }
+            .store(in: &cancellables)
+        
         setupNavBar()
         // CollectionView setup
         contentView.collectionViewDataSource = self
@@ -153,7 +173,9 @@ extension MoviesScreenViewController {
     private func showInitialLoaderUI() {
         if firstLoadOverlay == nil {
             let overlay = FirstLoadOverlay()
-            overlay.show(on: view)
+            let hostView: UIView = self.navigationController?.view ?? self.view
+            overlay.show(on: hostView)
+            hostView.bringSubviewToFront(overlay)
             firstLoadOverlay = overlay
             // remember show time and schedule guaranteed hide in 3s
             initialShowTime = CACurrentMediaTime()
@@ -244,11 +266,11 @@ extension MoviesScreenViewController {
                 self?.contentView.refreshControl.endRefreshing()
                 self?.contentView.reloadSection(0)
                 let debugMessage: String
-#if DEBUG
+                #if DEBUG
                 debugMessage = err.localizedDescription
-#else
+                #else
                 debugMessage = "Something went wrong. Please try again."
-#endif
+                #endif
                 let a = UIAlertController(title: "Error", message: debugMessage, preferredStyle: .alert)
                 a.addAction(.init(title: "OK", style: .default))
                 self?.present(a, animated: true)
@@ -333,7 +355,7 @@ extension MoviesScreenViewController {
     }
     
     @objc private func onSearchTapped() {
-        presentSearch()
+        presentSearchScreen()
     }
     
     @objc private func onFavoritesTapped() {
@@ -353,8 +375,7 @@ extension MoviesScreenViewController {
         present(nav, animated: true)
     }
     
-    /// Presents the SearchViewController by pushing onto navigation stack.
-    private func presentSearch() {
+    private func presentSearchScreen() {
         let vc = SearchScreenViewController()
         navigationController?.pushViewController(vc, animated: true)
     }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Network
 
 final class SearchScreenViewModel {
     // Inputs
@@ -17,6 +18,8 @@ final class SearchScreenViewModel {
     @Published private(set) var resultsCount: Int = 0
     @Published private(set) var showResultsLabel: Bool = false
     @Published private(set) var showEmptyPlaceholder: Bool = false
+
+    let alertSubject = PassthroughSubject<AlertType, Never>()
 
     // Private
     private let service: MovieService
@@ -61,6 +64,12 @@ final class SearchScreenViewModel {
         if !force, q == lastIssuedQuery { return }
         lastIssuedQuery = q
 
+        guard NetworkMonitor.shared.isConnected else {
+            print("No Internet Connection")
+            alertSubject.send(.noInternet)
+            return
+        }
+
         service.searchMovies(query: q, page: 1) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -68,9 +77,11 @@ final class SearchScreenViewModel {
                 case .success(let response):
                     self.movies = response.results
                     self.updateUI()
-                case .failure:
+                case .failure(let err):
+                    print("Search error: \(type(of: err)) - \(err.localizedDescription)")
                     self.movies = []
                     self.updateUI()
+                    self.alertSubject.send(.error(err.localizedDescription))
                 }
             }
         }

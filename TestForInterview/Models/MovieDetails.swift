@@ -21,17 +21,11 @@ struct MovieDetails: Codable {
     }
     
     var formattedReleaseDate: String {
-        guard let releaseDate = releaseDate else { return "N/A" }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        
-        guard let date = formatter.date(from: releaseDate) else {
-            return releaseDate
+        guard let releaseDate = releaseDate,
+              let date = DateFormatter.movieInputFormatter.date(from: releaseDate) else {
+            return "N/A"
         }
-        
-        formatter.dateFormat = "d MMMM yyyy"
-        let formatted = formatter.string(from: date).lowercased() // делаем месяц в нижнем регистре
-        return formatted
+        return DateFormatter.movieDetailsOutputFormatter.string(from: date)
     }
     
     var ratingText: String {

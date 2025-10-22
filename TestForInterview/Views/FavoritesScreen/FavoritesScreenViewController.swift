@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Combine
 
 final class FavoritesScreenViewController: UIViewController {
     private let viewModel = FavoritesScreenViewModel()
     private let contentView = FavoritesScreenView()
+    private var cancellables = Set<AnyCancellable>()
     
     deinit { NotificationCenter.default.removeObserver(self) }
     
@@ -21,6 +23,22 @@ final class FavoritesScreenViewController: UIViewController {
         super.viewDidLoad()
         
         setupNavBar()
+        viewModel.alertSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] alert in
+                guard let self = self else { return }
+                switch alert {
+                case .noInternet:
+                    let retry = UIAlertAction(title: "Retry", style: .default) { _ in
+                        self.viewModel.load()
+                    }
+                    let cancel = UIAlertAction.cancel
+                    self.showAlertWithActions(title: "No Internet", message: "Please check your connection and try again.", actions: [retry, cancel])
+                case .error(let message):
+                    self.showError(message: message)
+                }
+            }
+            .store(in: &cancellables)
         /// CollectionView setup
         contentView.collectionViewDataSource = self
         contentView.collectionViewDelegate = self

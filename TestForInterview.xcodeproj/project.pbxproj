@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		CA0AD79E2EA6F24A00CC4300 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = CA0AD79D2EA6F24A00CC4300 /* SDWebImage */; };
 		CA0AD8002EA91F9F00CC4300 /* Font&UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD7D12EA91F9F00CC4300 /* Font&UIFont+Custom.swift */; };
-		CA0AD8012EA91F9F00CC4300 /* String+ImgURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD7D22EA91F9F00CC4300 /* String+ImgURL.swift */; };
 		CA0AD8022EA91F9F00CC4300 /* UICollectionView+DeqReuse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD7D32EA91F9F00CC4300 /* UICollectionView+DeqReuse.swift */; };
 		CA0AD8032EA91F9F00CC4300 /* UITextField+Done.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD7D42EA91F9F00CC4300 /* UITextField+Done.swift */; };
 		CA0AD8042EA91F9F00CC4300 /* UITextField+OnTouchUpOutside.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD7D52EA91F9F00CC4300 /* UITextField+OnTouchUpOutside.swift */; };
@@ -50,11 +49,15 @@
 		CA0AD8412EA9496800CC4300 /* GrowFromSourceTransiton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD8402EA9496800CC4300 /* GrowFromSourceTransiton.swift */; };
 		CA0AD8432EA94DA900CC4300 /* FavoritesScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD8422EA94DA900CC4300 /* FavoritesScreenView.swift */; };
 		CA0AD8452EA94DDA00CC4300 /* FavoritesScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD8442EA94DDA00CC4300 /* FavoritesScreenViewModel.swift */; };
+		CA0AD8472EA961DE00CC4300 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD8462EA961DE00CC4300 /* NetworkMonitor.swift */; };
+		CA0AD8492EA962D200CC4300 /* UIViewController+ShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD8482EA962D200CC4300 /* UIViewController+ShowAlert.swift */; };
+		CA0AD84B2EA9642300CC4300 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD84A2EA9642300CC4300 /* Error.swift */; };
+		CA0AD84D2EA96E1900CC4300 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD84C2EA96E1900CC4300 /* DateFormatters.swift */; };
+		CA0AD8542EA973F000CC4300 /* FavoritesStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CA0AD8522EA973F000CC4300 /* FavoritesStore.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CA0AD7D12EA91F9F00CC4300 /* Font&UIFont+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font&UIFont+Custom.swift"; sourceTree = "<group>"; };
-		CA0AD7D22EA91F9F00CC4300 /* String+ImgURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ImgURL.swift"; sourceTree = "<group>"; };
 		CA0AD7D32EA91F9F00CC4300 /* UICollectionView+DeqReuse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+DeqReuse.swift"; sourceTree = "<group>"; };
 		CA0AD7D42EA91F9F00CC4300 /* UITextField+Done.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Done.swift"; sourceTree = "<group>"; };
 		CA0AD7D52EA91F9F00CC4300 /* UITextField+OnTouchUpOutside.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+OnTouchUpOutside.swift"; sourceTree = "<group>"; };
@@ -96,6 +99,11 @@
 		CA0AD8402EA9496800CC4300 /* GrowFromSourceTransiton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowFromSourceTransiton.swift; sourceTree = "<group>"; };
 		CA0AD8422EA94DA900CC4300 /* FavoritesScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesScreenView.swift; sourceTree = "<group>"; };
 		CA0AD8442EA94DDA00CC4300 /* FavoritesScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesScreenViewModel.swift; sourceTree = "<group>"; };
+		CA0AD8462EA961DE00CC4300 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		CA0AD8482EA962D200CC4300 /* UIViewController+ShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+ShowAlert.swift"; sourceTree = "<group>"; };
+		CA0AD84A2EA9642300CC4300 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		CA0AD84C2EA96E1900CC4300 /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
+		CA0AD8532EA973F000CC4300 /* FavoritesStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FavoritesStore.xcdatamodel; sourceTree = "<group>"; };
 		CB3540482E53764C000E1DD6 /* TestForInterview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestForInterview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -115,12 +123,13 @@
 			isa = PBXGroup;
 			children = (
 				CA0AD7D12EA91F9F00CC4300 /* Font&UIFont+Custom.swift */,
-				CA0AD7D22EA91F9F00CC4300 /* String+ImgURL.swift */,
 				CA0AD7D32EA91F9F00CC4300 /* UICollectionView+DeqReuse.swift */,
 				CA0AD7D42EA91F9F00CC4300 /* UITextField+Done.swift */,
 				CA0AD7D52EA91F9F00CC4300 /* UITextField+OnTouchUpOutside.swift */,
 				CA0AD7D62EA91F9F00CC4300 /* UIView+AddSubviews.swift */,
 				CA0AD7D72EA91F9F00CC4300 /* UserDefaults+Notification.swift */,
+				CA0AD8482EA962D200CC4300 /* UIViewController+ShowAlert.swift */,
+				CA0AD84C2EA96E1900CC4300 /* DateFormatters.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -139,7 +148,7 @@
 		CA0AD7E02EA91F9F00CC4300 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				CA0AD7DE2EA91F9F00CC4300 /* FavoritesManager.swift */,
+				CA0AD8552EA985AC00CC4300 /* FavoritesManager */,
 				CA0AD7DF2EA91F9F00CC4300 /* ThemeManager.swift */,
 			);
 			path = Managers;
@@ -151,6 +160,7 @@
 				CA0AD7E12EA91F9F00CC4300 /* Movie.swift */,
 				CA0AD7E22EA91F9F00CC4300 /* MovieDetails.swift */,
 				CA0AD7E32EA91F9F00CC4300 /* MovieListResponse.swift */,
+				CA0AD84A2EA9642300CC4300 /* Error.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -160,6 +170,7 @@
 			children = (
 				CA0AD7E52EA91F9F00CC4300 /* MovieService.swift */,
 				CA0AD7E62EA91F9F00CC4300 /* NetworkService.swift */,
+				CA0AD8462EA961DE00CC4300 /* NetworkMonitor.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -299,8 +310,8 @@
 		CA0AD82F2EA92FEB00CC4300 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				CA0AD7EF2EA91F9F00CC4300 /* AsyncWebImageView.swift */,
 				CA0AD83C2EA948BD00CC4300 /* MovieDetailsView.swift */,
+				CA0AD7EF2EA91F9F00CC4300 /* AsyncWebImageView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -335,6 +346,15 @@
 				CA0AD8442EA94DDA00CC4300 /* FavoritesScreenViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		CA0AD8552EA985AC00CC4300 /* FavoritesManager */ = {
+			isa = PBXGroup;
+			children = (
+				CA0AD7DE2EA91F9F00CC4300 /* FavoritesManager.swift */,
+				CA0AD8522EA973F000CC4300 /* FavoritesStore.xcdatamodeld */,
+			);
+			path = FavoritesManager;
 			sourceTree = "<group>";
 		};
 		CB35403F2E53764C000E1DD6 = {
@@ -435,9 +455,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA0AD8002EA91F9F00CC4300 /* Font&UIFont+Custom.swift in Sources */,
-				CA0AD8012EA91F9F00CC4300 /* String+ImgURL.swift in Sources */,
 				CA0AD8022EA91F9F00CC4300 /* UICollectionView+DeqReuse.swift in Sources */,
 				CA0AD8352EA938BC00CC4300 /* MoviesScreenView.swift in Sources */,
+				CA0AD84D2EA96E1900CC4300 /* DateFormatters.swift in Sources */,
 				CA0AD8032EA91F9F00CC4300 /* UITextField+Done.swift in Sources */,
 				CA0AD8332EA934AE00CC4300 /* SearchScreenView.swift in Sources */,
 				CA0AD8042EA91F9F00CC4300 /* UITextField+OnTouchUpOutside.swift in Sources */,
@@ -449,19 +469,23 @@
 				CA0AD80A2EA91F9F00CC4300 /* MovieDetails.swift in Sources */,
 				CA0AD80B2EA91F9F00CC4300 /* MovieListResponse.swift in Sources */,
 				CA0AD80C2EA91F9F00CC4300 /* MovieService.swift in Sources */,
+				CA0AD8472EA961DE00CC4300 /* NetworkMonitor.swift in Sources */,
 				CA0AD80D2EA91F9F00CC4300 /* NetworkService.swift in Sources */,
 				CA0AD8412EA9496800CC4300 /* GrowFromSourceTransiton.swift in Sources */,
 				CA0AD80E2EA91F9F00CC4300 /* DetailsScreenViewModel.swift in Sources */,
+				CA0AD84B2EA9642300CC4300 /* Error.swift in Sources */,
 				CA0AD80F2EA91F9F00CC4300 /* MoviesScreenViewModel.swift in Sources */,
 				CA0AD8112EA91F9F00CC4300 /* SearchScreenViewController.swift in Sources */,
 				CA0AD82D2EA92E7200CC4300 /* SearchScreenViewModel.swift in Sources */,
 				CA0AD8122EA91F9F00CC4300 /* AsyncWebImageView.swift in Sources */,
 				CA0AD8132EA91F9F00CC4300 /* DotsActivityIndicatorView.swift in Sources */,
 				CA0AD8382EA9403100CC4300 /* CustomUICollectionViewCell.swift in Sources */,
+				CA0AD8542EA973F000CC4300 /* FavoritesStore.xcdatamodeld in Sources */,
 				CA0AD8142EA91F9F00CC4300 /* FavoritesScreenViewController.swift in Sources */,
 				CA0AD83D2EA948BD00CC4300 /* MovieDetailsView.swift in Sources */,
 				CA0AD8152EA91F9F00CC4300 /* FirstLoadOverlay.swift in Sources */,
 				CA0AD8162EA91F9F00CC4300 /* LoadingFooterView.swift in Sources */,
+				CA0AD8492EA962D200CC4300 /* UIViewController+ShowAlert.swift in Sources */,
 				CA0AD83A2EA9479C00CC4300 /* MoviesScreenViewController.swift in Sources */,
 				CA0AD8172EA91F9F00CC4300 /* MovieCell.swift in Sources */,
 				CA0AD8182EA91F9F00CC4300 /* MovieDetailsViewController.swift in Sources */,
@@ -711,6 +735,19 @@
 			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		CA0AD8522EA973F000CC4300 /* FavoritesStore.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CA0AD8532EA973F000CC4300 /* FavoritesStore.xcdatamodel */,
+			);
+			currentVersion = CA0AD8532EA973F000CC4300 /* FavoritesStore.xcdatamodel */;
+			path = FavoritesStore.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = CB3540402E53764C000E1DD6 /* Project object */;
 }

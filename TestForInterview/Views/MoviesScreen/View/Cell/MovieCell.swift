@@ -138,16 +138,13 @@ extension MovieCell {
             with: movie.fullPosterURL,
             placeholderImage: nil,
             options: [.retryFailed, .scaleDownLargeImages, .continueInBackground]
-        ) { image, error, _, _ in
-            // Останавливаем индикатор в любом случае
+        ) { [weak self] image, error, _, _ in
+            guard let self = self else { return }
             self.posterImageView.sd_imageIndicator?.stopAnimatingIndicator()
-            
-            if let _ = image, error == nil {
-                // Реальное изображение — заполняем карточку
+            if image != nil && error == nil {
                 self.posterImageView.contentMode = .scaleAspectFill
                 self.posterImageView.backgroundColor = .clear
             } else {
-                // Ошибка — оставляем плейсхолдер в стиле "карточки"
                 self.posterImageView.contentMode = .scaleAspectFit
                 self.posterImageView.image = placeholderIMG
                 self.posterImageView.backgroundColor = UIColor.tertiarySystemFill
@@ -170,13 +167,20 @@ extension MovieCell {
     }
 
     @objc private func tapStar() {
-        onToggleFavorite?()
-        UIView.animate(withDuration: 0.12, animations: {
-            self.starButton.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-            guard let movieID = self.movieID else { return }
+        // Bounce animation (safe weak self to avoid retaining cell longer than needed)
+        UIView.animate(withDuration: 0.12, animations: { [weak self] in
+            self?.starButton.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+        }) { [weak self] _ in
+            UIView.animate(withDuration: 0.12) { [weak self] in
+                self?.starButton.transform = .identity
+            }
+        }
+
+        // Toggle favorite either via external handler (preferred) or locally when handler is absent
+        if let onToggleFavorite = onToggleFavorite {
+            onToggleFavorite()
+        } else if let movieID = movieID {
             FavoritesManager.shared.toggle(movieID)
-        }) { _ in
-            UIView.animate(withDuration: 0.12) { self.starButton.transform = .identity }
         }
     }
 

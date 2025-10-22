@@ -13,7 +13,7 @@ final class FirstLoadOverlay: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        isUserInteractionEnabled = true // блокируем тапки под низом
+        isUserInteractionEnabled = true
 
         addSubview(dim)
         addSubview(spinner)
@@ -33,14 +33,12 @@ final class FirstLoadOverlay: UIView {
             spinner.heightAnchor.constraint(equalToConstant: 120),
         ])
 
-        // лёгкое затемнение фона, чтобы смотрелось как в макете
-        dim.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.95)
+        dim.backgroundColor = UIColor.systemBackground
 
-        // круглая «невидимая» площадка, чтобы было проще позиционировать
         spinner.layer.cornerRadius = 60
         spinner.backgroundColor = .clear
 
-        alpha = 0 // появляемся анимацией
+        alpha = 0
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -59,9 +57,8 @@ final class FirstLoadOverlay: UIView {
         layoutIfNeeded()
         spinner.startAnimating()
 
-        // анимация появления
-        self.alpha = 0
-        self.spinner.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        alpha = 0
+        spinner.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut]) {
             self.alpha = 1
             self.spinner.transform = .identity
@@ -70,7 +67,6 @@ final class FirstLoadOverlay: UIView {
 
     func hideAndRemove() {
         spinner.stopAnimating()
-        // анимация исчезновения
         UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseIn], animations: {
             self.alpha = 0
             self.spinner.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)

@@ -1,4 +1,5 @@
 //
+//
 //  DetailsViewModel.swift
 //  TestForInterview
 //
@@ -7,10 +8,13 @@
 
 import Foundation
 import Combine
+import Network
 
 final class DetailsScreenViewModel: ObservableObject {
     @Published var details: MovieDetails?
     @Published var isFavorite: Bool = false
+    
+    let alertSubject = PassthroughSubject<AlertType, Never>()
     
     private let service = MovieService()
     private var movieId: Int
@@ -33,13 +37,19 @@ final class DetailsScreenViewModel: ObservableObject {
     }
     
     func fetch() {
+        guard NetworkMonitor.shared.isConnected else {
+            print("No Internet Connection")
+            alertSubject.send(.noInternet)
+            return
+        }
         service.fetchMovieDetails(id: movieId) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let d):
                     self?.details = d
                 case .failure(let err):
-                    print("Details error:", err.localizedDescription)
+                    print("Details error: \(type(of: err)) - \(err.localizedDescription)")
+                    self?.alertSubject.send(.error(err.localizedDescription))
                 }
             }
         }
