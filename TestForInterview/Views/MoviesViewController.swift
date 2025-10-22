@@ -46,6 +46,7 @@ final class MoviesViewController: UIViewController,
     }()
 
     private let avgContainer = UIView()
+    private weak var favoritesButtonView: UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +57,11 @@ final class MoviesViewController: UIViewController,
         bind()
         isShowingFooter = false
         viewModel.refresh()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateAvgTitleSize()
     }
     
     private func setupCollection() {
@@ -289,10 +295,14 @@ final class MoviesViewController: UIViewController,
         let item = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onThemeTapped))
         return item
     }
-
+    
     private var favoritesBarButton: UIBarButtonItem {
-        let image = UIImage(resource: .favOnIcon).withRenderingMode(.alwaysTemplate)
-        let item = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onFavoritesTapped))
+        let btn = UIButton(type: .system)
+        btn.setImage(UIImage(resource: .favOnIcon).withRenderingMode(.alwaysTemplate), for: .normal)
+        btn.tintColor = .txt
+        btn.addTarget(self, action: #selector(onFavoritesTapped), for: .touchUpInside)
+        let item = UIBarButtonItem(customView: btn)
+        self.favoritesButtonView = btn
         return item
     }
 
@@ -338,7 +348,6 @@ final class MoviesViewController: UIViewController,
         }
         let sum = ratings.reduce(0.0, +)
         let avg = sum / Double(ratings.count)
-        print("Average rating updated to:", String(format: "Avg Rating: %.2f", avg))
         avgTitleLabel.text = String(format: "Avg Rating: %.2f", avg)
         updateAvgTitleSize()
         avgTitleLabel.setNeedsLayout()
@@ -353,11 +362,6 @@ final class MoviesViewController: UIViewController,
         navigationController?.navigationBar.setNeedsLayout()
         navigationController?.navigationBar.layoutIfNeeded()
     }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        updateAvgTitleSize()
-    }
     
     @objc private func onThemeTapped() {
         ThemeManager.shared.toggleTheme()
@@ -368,21 +372,25 @@ final class MoviesViewController: UIViewController,
     }
     
     @objc private func onFavoritesTapped() {
-        let alert = UIAlertController(title: "Favorites", message: "Favorites screen will be implemented later", preferredStyle: .alert)
-        alert.addAction(.init(title: "OK", style: .default))
-        present(alert, animated: true)
+        let favVC = FavoritesViewController()
+            let nav = UINavigationController(rootViewController: favVC)
+            nav.modalPresentationStyle = .custom
+
+            let delegate = FavoritesTransitioningDelegate.shared
+            if let button = favoritesButtonView, let win = view.window {
+                let frameInWindow = button.convert(button.bounds, to: win)
+                delegate.originFrame = frameInWindow
+            } else {
+                // запасной вариант, если по какой-то причине кнопка недоступна
+                delegate.originFrame = CGRect(x: view.bounds.midX, y: view.safeAreaInsets.top + 10, width: 44, height: 44)
+            }
+            nav.transitioningDelegate = delegate
+            present(nav, animated: true)
     }
 
-    /// Stub for search flow; replace with your real search screen
+    /// Presents the SearchViewController by pushing onto navigation stack.
     private func presentSearch() {
-        let alert = UIAlertController(title: "Search", message: "Hook up your search screen here.", preferredStyle: .alert)
-        alert.addTextField { $0.placeholder = "Movie title" }
-        alert.addAction(.init(title: "Cancel", style: .cancel))
-        alert.addAction(.init(title: "OK", style: .default, handler: { [weak alert] _ in
-            let query = alert?.textFields?.first?.text ?? ""
-            // TODO: forward query to viewModel.search(query:)
-            print("Search query:", query)
-        }))
-        present(alert, animated: true)
+        let vc = SearchViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

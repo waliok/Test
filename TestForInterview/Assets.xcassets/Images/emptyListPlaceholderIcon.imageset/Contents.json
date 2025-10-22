@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "search.svg",
+      "filename" : "no found.svg",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "search 2.svg",
+      "filename" : "no found 1.svg",
       "idiom" : "universal"
     },
     {
@@ -21,15 +21,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "search 1.svg",
+      "filename" : "no found (1).svg",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }

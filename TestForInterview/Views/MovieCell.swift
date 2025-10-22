@@ -28,6 +28,8 @@ final class MovieCell: UICollectionViewCell {
 
         titleLabel.font = .custom(.roboto(weight: .semibold, size: 14))
         titleLabel.textColor = .txt
+        titleLabel.numberOfLines = 2
+        titleLabel.lineBreakMode = .byTruncatingTail
         ratingLabel.font = .custom(.roboto(weight: .medium, size: 10))
         ratingLabel.textColor = .txt
 
@@ -48,14 +50,16 @@ final class MovieCell: UICollectionViewCell {
             poster.topAnchor.constraint(equalTo: contentView.topAnchor),
             poster.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             poster.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-//            poster.heightAnchor.constraint(equalTo: poster.widthAnchor, multiplier: 1.43),
+//            poster.heightAnchor.constraint(equalTo: poster.widthAnchor, multiplier: 1.4),
 
             titleLabel.topAnchor.constraint(equalTo: poster.bottomAnchor, constant: 4),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 20),
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor),
 
             ratingLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             ratingLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            ratingLabel.heightAnchor.constraint(equalToConstant: 16),
             ratingLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor),
             ratingLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
@@ -72,7 +76,37 @@ final class MovieCell: UICollectionViewCell {
         movieID = movie.id
         titleLabel.text = movie.title
         ratingLabel.text = "Rating: \(Int(round(movie.voteAverage ?? 0)))"
-        poster.sd_setImage(with: movie.fullPosterURL, placeholderImage: nil, options: [.continueInBackground, .retryFailed], completed: nil)
+        let indicator = ThemeManager.shared.current == .dark
+        ? SDWebImageActivityIndicator.whiteLarge
+        : SDWebImageActivityIndicator.grayLarge
+        poster.tintColor = UIColor.secondaryLabel
+        poster.sd_imageIndicator = indicator
+        poster.sd_imageIndicator?.startAnimatingIndicator()
+        poster.sd_imageTransition = .fade
+        
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 80, weight: .regular)
+        let placeholderIMG = UIImage(systemName: "photo.fill.on.rectangle.fill", withConfiguration: symbolConfig)
+        poster.image = placeholderIMG
+        
+        poster.sd_setImage(
+            with: movie.fullPosterURL,
+            placeholderImage: nil,
+            options: [.retryFailed, .scaleDownLargeImages, .continueInBackground]
+        ) { image, error, _, _ in
+            // Останавливаем индикатор в любом случае
+            self.poster.sd_imageIndicator?.stopAnimatingIndicator()
+            
+            if let _ = image, error == nil {
+                // Реальное изображение — заполняем карточку
+                self.poster.contentMode = .scaleAspectFill
+                self.poster.backgroundColor = .clear
+            } else {
+                // Ошибка — оставляем плейсхолдер в стиле "карточки"
+                self.poster.contentMode = .scaleAspectFit
+                self.poster.image = placeholderIMG
+                self.poster.backgroundColor = UIColor.tertiarySystemFill
+            }
+        }
         
         updateStar(isFav: FavoritesManager.shared.isFavorite(movie.id))
         NotificationCenter.default.addObserver(self, selector: #selector(favChanged), name: .favoritesChanged, object: nil)
@@ -107,6 +141,8 @@ final class MovieCell: UICollectionViewCell {
         super.prepareForReuse()
         poster.sd_cancelCurrentImageLoad()
         poster.image = nil
+        titleLabel.text = nil
+        ratingLabel.text = nil
         NotificationCenter.default.removeObserver(self, name: .favoritesChanged, object: nil)
     }
 }
