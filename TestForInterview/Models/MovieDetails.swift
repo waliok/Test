@@ -33,7 +33,7 @@ struct MovieDetails: Codable {
         let formatted = formatter.string(from: date).lowercased() // делаем месяц в нижнем регистре
         return formatted
     }
-
+    
     var ratingText: String {
         guard let voteAverage = voteAverage else { return "N/A" }
         return String(format: "%.0f", voteAverage)

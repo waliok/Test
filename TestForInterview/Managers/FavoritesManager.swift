@@ -7,27 +7,39 @@
 
 import Foundation
 
+/// Central place to manage favorite movie IDs.
+/// Now relies on the `UserDefault` wrapper (see `UserDefaults.favoriteMovieIDs`) instead of manual `UserDefaults` access.
 final class FavoritesManager {
     static let shared = FavoritesManager()
-    private let key = "favorite_movie_ids"
-    private var set: Set<Int> = []
-    var ids: [Int] { Array(set) }
+    private init() {}
 
-    private init() {
-        if let saved = UserDefaults.standard.array(forKey: key) as? [Int] {
-            set = Set(saved)
+    /// Current favorite IDs (persisted).
+    var ids: [Int] { UserDefaults.favoriteMovieIDs }
+
+    /// Fast check whether an id is in favorites.
+    func isFavorite(_ id: Int) -> Bool {
+        return UserDefaults.favoriteMovieIDs.contains(id)
+    }
+
+    /// Toggle a movie id in favorites and persist.
+    func toggle(_ id: Int) {
+        update { set in
+            if set.contains(id) { set.remove(id) } else { set.insert(id) }
         }
     }
-    func isFavorite(_ id: Int) -> Bool { set.contains(id) }
-    func toggle(_ id: Int) {
-        if set.contains(id) { set.remove(id) } else { set.insert(id) }
-        UserDefaults.standard.set(Array(set), forKey: key)
-        NotificationCenter.default.post(name: .favoritesChanged, object: nil)
-    }
+
+    /// Remove a movie id from favorites and persist. No-op if not present.
     func remove(_ id: Int) {
-        if set.contains(id) { set.remove(id) }
-        UserDefaults.standard.set(Array(set), forKey: key)
-        NotificationCenter.default.post(name: .favoritesChanged, object: nil)
+        update { set in
+            set.remove(id)
+        }
+    }
+
+    /// Internal helper: mutate the Set form, then save back via the property wrapper
+    /// and notify listeners about the change.
+    private func update(_ transform: (inout Set<Int>) -> Void) {
+        var set = Set(UserDefaults.favoriteMovieIDs)
+        transform(&set)
+        UserDefaults.favoriteMovieIDs = Array(set)
     }
 }
-extension Notification.Name { static let favoritesChanged = Notification.Name("favoritesChanged") }

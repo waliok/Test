@@ -12,7 +12,7 @@ final class NetworkManager {
     private init() {}
     
     private let baseURL = "https://api.themoviedb.org/3"
-    private var apiKey = Helper.apiKey
+    private let apiKey = Helper.apiKey
     
     private func buildURL(path: String, params: [String:String] = [:]) -> URL? {
         guard var comps = URLComponents(string: baseURL + path) else { return nil }
